@@ -50,7 +50,8 @@
       radial-gradient(ellipse at 20% 0%, rgba(163,24,26,0.06), transparent 60%),
       radial-gradient(ellipse at 100% 100%, rgba(0,0,0,0.4), transparent 60%);
   }
-  a { color: inherit; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--gold); }
   img { max-width: 100%; display: block; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
 
@@ -92,7 +93,7 @@
   .drip { display: block; margin: 14px auto 0; width: 320px; max-width: 70%; height: 22px; }
   .drip path { fill: var(--red); }
 
-  /* Ticker */
+  /* Ticker - sped up a little bit (12s duration) */
   .ticker-bar { background: var(--red); overflow: hidden; margin-top: 22px; border-top: 1px solid rgba(0,0,0,0.3); border-bottom: 1px solid rgba(0,0,0,0.3); }
   .ticker-bar .tag {
     display: inline-block; background: var(--bg); color: var(--ink);
@@ -101,7 +102,7 @@
   }
   .ticker-track {
     display: flex; align-items: center; white-space: nowrap;
-    animation: scroll-left 16s linear infinite;
+    animation: scroll-left 12s linear infinite;
   }
   .ticker-track span.item {
     font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold;
@@ -122,11 +123,15 @@
   /* Lead + sidebar */
   .front { padding: 34px 0 10px; }
   .front-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
-  .lead-image { background: var(--card); border: 1px solid var(--rule); aspect-ratio: 16/10; overflow: hidden; }
-  .lead-image img { width: 100%; height: 100%; object-fit: cover; }
+  .lead-image { background: var(--card); border: 1px solid var(--rule); aspect-ratio: 16/10; overflow: hidden; display: block; }
+  .lead-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .lead-image:hover img { transform: scale(1.02); }
   .kicker { font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.14em; color: var(--red-bright); text-transform: uppercase; margin: 16px 0 6px; }
   .lead h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.08; margin: 0 0 10px; }
+  .lead h2 a:hover { color: var(--gold); }
   .lead p.dek { color: var(--ink-dim); font-size: 16px; line-height: 1.5; margin: 0; }
+  .read-more { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 0.08em; color: var(--gold); display: inline-block; margin-top: 10px; text-transform: uppercase; }
+  .read-more:hover { text-decoration: underline; }
   .byline { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: var(--ink-dim); margin-top: 12px; letter-spacing: 0.04em; }
 
   .sidebar { border-left: 1px solid var(--rule); padding-left: 26px; }
@@ -135,11 +140,12 @@
     color: var(--gold); text-transform: uppercase; margin: 0 0 14px;
     border-bottom: 1px solid var(--rule); padding-bottom: 10px;
   }
-  .sidebar .item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .sidebar .item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); align-items: center; }
   .sidebar .item:last-child { border-bottom: none; }
-  .sidebar .thumb { width: 64px; height: 64px; background: var(--card); border: 1px solid var(--rule); flex-shrink: 0; overflow: hidden; }
+  .sidebar .thumb { width: 64px; height: 64px; background: var(--card); border: 1px solid var(--rule); flex-shrink: 0; overflow: hidden; display: block; }
   .sidebar .thumb img { width: 100%; height: 100%; object-fit: cover; }
   .sidebar h4 { font-family: 'Playfair Display', Georgia, serif; font-size: 15px; line-height: 1.25; margin: 0; }
+  .sidebar h4 a:hover { color: var(--gold); }
   .sidebar .item .kicker { margin: 0 0 3px; font-size: 10px; }
 
   /* Desks grid */
@@ -155,13 +161,15 @@
   .section-title::before { left: 0; } .section-title::after { right: 0; }
 
   .desk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-  .desk-card { background: var(--paper); border: 1px solid var(--rule); }
-  .desk-card .thumb { aspect-ratio: 4/3; background: var(--card); overflow: hidden; border-bottom: 1px solid var(--rule); }
-  .desk-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .desk-card .body { padding: 16px 18px 20px; }
+  .desk-card { background: var(--paper); border: 1px solid var(--rule); display: flex; flex-direction: column; }
+  .desk-card .thumb { aspect-ratio: 4/3; background: var(--card); overflow: hidden; border-bottom: 1px solid var(--rule); display: block; }
+  .desk-card .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .desk-card .thumb:hover img { transform: scale(1.03); }
+  .desk-card .body { padding: 16px 18px 20px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
   .desk-card .kicker { margin: 0 0 6px; }
   .desk-card h4 { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; line-height: 1.25; margin: 0 0 8px; }
-  .desk-card p { font-size: 13px; color: var(--ink-dim); line-height: 1.5; margin: 0; }
+  .desk-card h4 a:hover { color: var(--gold); }
+  .desk-card p { font-size: 13px; color: var(--ink-dim); line-height: 1.5; margin: 0 0 12px; }
 
   /* Sign-off */
   .signoff { padding: 40px 0 10px; text-align: center; }
@@ -240,37 +248,51 @@
 
 <div class="wrap front">
   <div class="front-grid">
+    <!-- COVER STORY -->
     <div class="lead">
-      <div class="lead-image">
+      <!-- EDIT IMAGE LINK HERE: Change href="images/lead.jpg" to your picture file path -->
+      <a href="ARTICLE_LINK_HERE" class="lead-image">
         <img src="images/lead.jpg" alt="This week's lead piece">
-      </div>
+      </a>
       <div class="kicker">Cover Story</div>
-      <h2>Bartlett-Middleford Mural Progerss</h2>
+      <!-- EDIT ARTICLE LINK HERE: Change href="ARTICLE_LINK_HERE" to your article URL -->
+      <h2><a href="ARTICLE_LINK_HERE">Bartlett-Middleford Mural Progerss</a></h2>
       <p class="dek">After lots of revisions and back and forths, we now have the mural underway! &mdash; 2 down, 2 to go!.</p>
+      <div><a href="ARTICLE_LINK_HERE" class="read-more">Read Full Article &rarr;</a></div>
       <div class="byline">By Jaws &nbsp;&middot;&nbsp; QuarkForce</div>
     </div>
 
+    <!-- SIDEBAR -->
     <div class="sidebar">
       <h3 class="rail-title">Also This Week</h3>
+      
       <div class="item">
-        <div class="thumb"><img src="images/side1.jpg" alt=""></div>
+        <!-- EDIT IMAGE LINK HERE: images/side1.jpg -->
+        <a href="SIDE1_ARTICLE_LINK_HERE" class="thumb"><img src="images/side1.jpg" alt=""></a>
         <div>
           <div class="kicker">Music</div>
-          <h4>Tony SHarks Album Very Soon!</h4>
+          <!-- EDIT ARTICLE LINK HERE -->
+          <h4><a href="SIDE1_ARTICLE_LINK_HERE">Tony SHarks Album Very Soon!</a></h4>
         </div>
       </div>
+
       <div class="item">
-        <div class="thumb"><img src="images/side2.jpg" alt=""></div>
+        <!-- EDIT IMAGE LINK HERE: images/side2.jpg -->
+        <a href="SIDE2_ARTICLE_LINK_HERE" class="thumb"><img src="images/side2.jpg" alt=""></a>
         <div>
           <div class="kicker">Mural Update</div>
-          <h4>2 down 2 to go! </h4>
+          <!-- EDIT ARTICLE LINK HERE -->
+          <h4><a href="SIDE2_ARTICLE_LINK_HERE">2 down 2 to go!</a></h4>
         </div>
       </div>
+
       <div class="item">
-        <div class="thumb"><img src="images/side3.jpg" alt=""></div>
+        <!-- EDIT IMAGE LINK HERE: images/side3.jpg -->
+        <a href="SIDE3_ARTICLE_LINK_HERE" class="thumb"><img src="images/side3.jpg" alt=""></a>
         <div>
           <div class="kicker">Shop</div>
-          <h4>New Merch!</h4>
+          <!-- EDIT ARTICLE LINK HERE -->
+          <h4><a href="SIDE3_ARTICLE_LINK_HERE">New Merch!</a></h4>
         </div>
       </div>
     </div>
@@ -281,57 +303,105 @@
   <div class="section-title">This Week's Waves</div>
   <div class="desk-grid">
 
+    <!-- DRAWINGS -->
     <div class="desk-card" id="drawings">
-      <div class="thumb"><img src="images/drawings.jpg" alt="Drawings"></div>
+      <!-- EDIT IMAGE LINK HERE: images/drawings.jpg -->
+      <a href="DRAWINGS_ARTICLE_LINK_HERE" class="thumb">
+        <img src="images/drawings.jpg" alt="Drawings">
+      </a>
       <div class="body">
-        <div class="kicker">Drawings</div>
-        <h4>[Piece name] &mdash; pencil / pen / marker</h4>
-        <p>Sketchbook page, old work revisited, lyric sheet &mdash; whatever's moving this week.</p>
+        <div>
+          <div class="kicker">Drawings</div>
+          <!-- EDIT ARTICLE LINK HERE -->
+          <h4><a href="DRAWINGS_ARTICLE_LINK_HERE">[Piece name] &mdash; pencil / pen / marker</a></h4>
+          <p>Sketchbook page, old work revisited, lyric sheet &mdash; whatever's moving this week.</p>
+        </div>
+        <div><a href="DRAWINGS_ARTICLE_LINK_HERE" class="read-more">View Article &rarr;</a></div>
       </div>
     </div>
 
+    <!-- PAINTINGS -->
     <div class="desk-card" id="paintings">
-      <div class="thumb"><img src="images/paintings.jpg" alt="Paintings"></div>
+      <!-- EDIT IMAGE LINK HERE: images/paintings.jpg -->
+      <a href="PAINTINGS_ARTICLE_LINK_HERE" class="thumb">
+        <img src="images/paintings.jpg" alt="Paintings">
+      </a>
       <div class="body">
-        <div class="kicker">Painting in progress</div>
-        <h4>-utitled- &mdash; canvas</h4>
-        <p>Progress underway!</p>
+        <div>
+          <div class="kicker">Painting in progress</div>
+          <!-- EDIT ARTICLE LINK HERE -->
+          <h4><a href="PAINTINGS_ARTICLE_LINK_HERE">-utitled- &mdash; canvas</a></h4>
+          <p>Progress underway!</p>
+        </div>
+        <div><a href="PAINTINGS_ARTICLE_LINK_HERE" class="read-more">View Article &rarr;</a></div>
       </div>
     </div>
 
+    <!-- COMMISSIONS -->
     <div class="desk-card" id="commissions">
-      <div class="thumb"><img src="images/commissions.jpg" alt="Commission work"></div>
+      <!-- EDIT IMAGE LINK HERE: images/commissions.jpg -->
+      <a href="COMMISSIONS_ARTICLE_LINK_HERE" class="thumb">
+        <img src="images/commissions.jpg" alt="Commission work">
+      </a>
       <div class="body">
-        <div class="kicker">Commission Work</div>
-        <h4>Moxi Cycling &mdash; New t-shirt design </h4>
-        <p>Happy to collaborate with Hedi at Moxi.</p>
+        <div>
+          <div class="kicker">Commission Work</div>
+          <!-- EDIT ARTICLE LINK HERE -->
+          <h4><a href="COMMISSIONS_ARTICLE_LINK_HERE">Moxi Cycling &mdash; New t-shirt design</a></h4>
+          <p>Happy to collaborate with Hedi at Moxi.</p>
+        </div>
+        <div><a href="COMMISSIONS_ARTICLE_LINK_HERE" class="read-more">View Article &rarr;</a></div>
       </div>
     </div>
 
+    <!-- SHOWS -->
     <div class="desk-card" id="shows">
-      <div class="thumb"><img src="images/shows.jpg" alt="Shows and expos"></div>
+      <!-- EDIT IMAGE LINK HERE: images/shows.jpg -->
+      <a href="SHOWS_ARTICLE_LINK_HERE" class="thumb">
+        <img src="images/shows.jpg" alt="Shows and expos">
+      </a>
       <div class="body">
-        <div class="kicker">Shows, Expos &amp; Contests</div>
-        <h4>MonsTober &mdash; Canvas Wars</h4>
-        <p>October 3rd, Phoenix Phoodery, 5 artists Monster Competition! &mdash; Mark vs Pauly vs Bernard vs Faith vs Rooster...</p>
+        <div>
+          <div class="kicker">Shows, Expos &amp; Contests</div>
+          <!-- EDIT ARTICLE LINK HERE -->
+          <h4><a href="SHOWS_ARTICLE_LINK_HERE">MonsTober &mdash; Canvas Wars</a></h4>
+          <p>October 3rd, Phoenix Phoodery, 5 artists Monster Competition! &mdash; Mark vs Pauly vs Bernard vs Faith vs Rooster...</p>
+        </div>
+        <div><a href="SHOWS_ARTICLE_LINK_HERE" class="read-more">View Article &rarr;</a></div>
       </div>
     </div>
 
+    <!-- MERCH -->
     <div class="desk-card" id="merch">
-      <div class="thumb"><img src="images/merch.jpg" alt="Merch"></div>
+      <!-- EDIT IMAGE LINK HERE: images/merch.jpg -->
+      <a href="MERCH_ARTICLE_LINK_HERE" class="thumb">
+        <img src="images/merch.jpg" alt="Merch">
+      </a>
       <div class="body">
-        <div class="kicker">Merch</div>
-        <h4>QuarkZine i9 &mdash; QuarkZine</h4>
-        <p>What just dropped or restocked, and where to grab it.</p>
+        <div>
+          <div class="kicker">Merch</div>
+          <!-- EDIT ARTICLE LINK HERE -->
+          <h4><a href="MERCH_ARTICLE_LINK_HERE">QuarkZine i9 &mdash; QuarkZine</a></h4>
+          <p>What just dropped or restocked, and where to grab it.</p>
+        </div>
+        <div><a href="MERCH_ARTICLE_LINK_HERE" class="read-more">View Article &rarr;</a></div>
       </div>
     </div>
 
+    <!-- EXPERIMENTAL -->
     <div class="desk-card" id="experimental">
-      <div class="thumb"><img src="images/experimental.jpg" alt="Experimental work"></div>
+      <!-- EDIT IMAGE LINK HERE: images/experimental.jpg -->
+      <a href="EXPERIMENTAL_ARTICLE_LINK_HERE" class="thumb">
+        <img src="images/experimental.jpg" alt="Experimental work">
+      </a>
       <div class="body">
-        <div class="kicker">New &amp; Experimental</div>
-        <h4>SinicalSkateboards / Mural decks &mdash; skateboard decks</h4>
-        <p>Sinical Skateboards.</p>
+        <div>
+          <div class="kicker">New &amp; Experimental</div>
+          <!-- EDIT ARTICLE LINK HERE -->
+          <h4><a href="EXPERIMENTAL_ARTICLE_LINK_HERE">SinicalSkateboards / Mural decks &mdash; skateboard decks</a></h4>
+          <p>Sinical Skateboards.</p>
+        </div>
+        <div><a href="EXPERIMENTAL_ARTICLE_LINK_HERE" class="read-more">View Article &rarr;</a></div>
       </div>
     </div>
 
