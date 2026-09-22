@@ -68,25 +68,31 @@
   .utility .wrap { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; padding-bottom: 8px; flex-wrap: wrap; gap: 6px; }
   .utility nav a { text-decoration: none; margin-left: 16px; color: var(--ink-dim); }
   .utility nav a:hover { color: var(--gold); }
-  /* Highlighted Portal Link */
-  .utility nav a.portal-link {
-    color: var(--gold);
-    font-weight: bold;
-    border: 1px solid var(--gold);
-    padding: 3px 8px;
-    border-radius: 3px;
-    transition: all 0.2s ease;
-  }
-  .utility nav a.portal-link:hover {
-    background: var(--gold);
-    color: var(--bg);
-  }
 
   /* Masthead */
   .masthead { text-align: center; padding: 34px 20px 0; }
+  .masthead .portal-welcome {
+    display: inline-block;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+    padding: 3px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    background: var(--paper);
+    transition: all 0.2s ease;
+  }
+  .masthead .portal-welcome:hover {
+    color: var(--ink);
+    border-color: var(--gold);
+    background: var(--card);
+  }
   .masthead .eyebrow {
     font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.25em;
-    color: var(--red-bright); margin-bottom: 6px;
+    color: var(--red-bright); margin-bottom: 6px; margin-top: 4px;
   }
   .masthead h1 {
     font-family: 'Anton', Impact, sans-serif;
@@ -233,8 +239,6 @@
   <div class="wrap">
     <span>Night Edition &nbsp;&middot;&nbsp; September 20, 2026 &nbsp;&middot;&nbsp; Issue No. 01</span>
     <nav>
-      <!-- REPLACED/ADDED: Noticeable Main Portal Link -->
-      <a href="https://jawsatak47.github.io/Megalodon/" class="portal-link">&larr; Main Portal</a>
       <a href="archive.html">Archive</a>
       <a href="https://jawsatak47.myspreadshop.com/">Shop</a>
       <a href="#">Contact</a>
@@ -243,6 +247,8 @@
 </div>
 
 <div class="masthead">
+  <!-- ADDED: "Welcome to JawsGraffiti" linked to the main portal -->
+  <a href="https://jawsatak47.github.io/Megalodon/" class="portal-welcome">&larr; Welcome to JawsGraffiti</a>
   <div class="eyebrow">JawsAtak &nbsp;&mdash;&nbsp; Dispatched Weekly</div>
   <h1>SHARK<span>WEEKLY</span></h1>
   <div class="tagline">JawsAtak weekly updates.</div>
