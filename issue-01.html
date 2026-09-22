@@ -71,9 +71,28 @@
 
   /* Masthead */
   .masthead { text-align: center; padding: 34px 20px 0; }
+  .masthead .portal-welcome {
+    display: inline-block;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+    padding: 3px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    background: var(--paper);
+    transition: all 0.2s ease;
+  }
+  .masthead .portal-welcome:hover {
+    color: var(--ink);
+    border-color: var(--gold);
+    background: var(--card);
+  }
   .masthead .eyebrow {
     font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.25em;
-    color: var(--red-bright); margin-bottom: 6px;
+    color: var(--red-bright); margin-bottom: 6px; margin-top: 4px;
   }
   .masthead h1 {
     font-family: 'Anton', Impact, sans-serif;
@@ -202,7 +221,19 @@
 </head>
 <body>
 
-<!-- Archived issue — frozen, do not edit -->
+<!-- =========================================================
+  WEEKLY ROUTINE — read this before editing:
+  1. Duplicate THIS file in the SAME folder and rename the copy
+     issue-01.html (next week issue-02.html, etc.) — keeping it
+     in the same folder means the image filenames below still
+     work with no path changes. That copy is now frozen — never
+     edit it again.
+  2. Open archive.html and copy/paste one existing card block,
+     then edit it to point to issue-01.html with this week's
+     date, title, and thumbnail image.
+  3. Come back to THIS file (index.html) and overwrite it with
+     next week's content. It's now the new live issue.
+========================================================== -->
 
 <div class="utility">
   <div class="wrap">
@@ -216,6 +247,8 @@
 </div>
 
 <div class="masthead">
+  <!-- ADDED: "Welcome to JawsGraffiti" linked to the main portal -->
+  <a href="https://jawsatak47.github.io/Megalodon/" class="portal-welcome">&larr; Welcome to JawsGraffiti</a>
   <div class="eyebrow">JawsAtak &nbsp;&mdash;&nbsp; Dispatched Weekly</div>
   <h1>SHARK<span>WEEKLY</span></h1>
   <div class="tagline">JawsAtak weekly updates.</div>
