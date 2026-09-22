@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SharkWeekly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a09;
+    --paper: #17150f;
+    --card: #1e1b14;
+    --ink: #e9e1cb;
+    --ink-dim: #a89f89;
+    --rule: #3a3427;
+    --red: #a3181a;
+    --red-bright: #c8261f;
+    --gold: #c9a24a;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #ece3c9;
+      --paper: #f5eed9;
+      --card: #faf4e4;
+      --ink: #1b1710;
+      --ink-dim: #6e6650;
+      --rule: #d3c69f;
+      --red: #8c1416;
+      --red-bright: #a3181a;
+      --gold: #8a6a1f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a0a09; --paper: #17150f; --card: #1e1b14; --ink: #e9e1cb;
+    --ink-dim: #a89f89; --rule: #3a3427; --red: #a3181a; --red-bright: #c8261f; --gold: #c9a24a;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); scroll-behavior: smooth; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(163,24,26,0.06), transparent 60%),
+      radial-gradient(ellipse at 100% 100%, rgba(0,0,0,0.4), transparent 60%);
+  }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--gold); }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* Utility bar */
+  .utility {
+    background: var(--bg);
+    border-bottom: 1px solid var(--rule);
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .utility .wrap { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; padding-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+  .utility nav a { text-decoration: none; margin-left: 16px; color: var(--ink-dim); }
+  .utility nav a:hover { color: var(--gold); }
+
+  /* Masthead */
+  .masthead { text-align: center; padding: 34px 20px 0; }
+  .masthead .eyebrow {
+    font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.25em;
+    color: var(--red-bright); margin-bottom: 6px;
+  }
+  .masthead h1 {
+    font-family: 'Anton', Impact, sans-serif;
+    font-weight: 400;
+    font-size: clamp(42px, 9vw, 88px);
+    letter-spacing: 0.01em;
+    margin: 0;
+    line-height: 0.9;
+    color: var(--ink);
+    text-shadow: 0 2px 0 rgba(0,0,0,0.6);
+  }
+  .masthead h1 span { color: var(--red-bright); }
+  .masthead .tagline {
+    font-family: Georgia, serif; font-style: italic; color: var(--ink-dim);
+    font-size: 14px; margin-top: 6px;
+  }
+  .drip { display: block; margin: 14px auto 0; width: 320px; max-width: 70%; height: 22px; }
+  .drip path { fill: var(--red); }
+
+  /* Ticker */
+  .ticker-bar { background: var(--red); overflow: hidden; margin-top: 22px; border-top: 1px solid rgba(0,0,0,0.3); border-bottom: 1px solid rgba(0,0,0,0.3); }
+  .ticker-bar .tag {
+    display: inline-block; background: var(--bg); color: var(--ink);
+    font-family: Helvetica, Arial, sans-serif; font-weight: bold; font-size: 12px;
+    letter-spacing: 0.1em; padding: 8px 14px; flex-shrink: 0;
+  }
+  .ticker-track {
+    display: flex; align-items: center; white-space: nowrap;
+    animation: scroll-left 12s linear infinite;
+  }
+  .ticker-track span.item {
+    font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold;
+    color: #fff; padding: 8px 28px 8px 0;
+  }
+  @keyframes scroll-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
+  /* Section nav */
+  .desk-nav { background: var(--paper); border-bottom: 1px solid var(--rule); }
+  .desk-nav .wrap { display: flex; gap: 22px; flex-wrap: wrap; padding: 10px 20px; justify-content: center; }
+  .desk-nav a {
+    font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.12em;
+    text-decoration: none; color: var(--ink-dim); text-transform: uppercase;
+  }
+  .desk-nav a:hover { color: var(--gold); }
+
+  /* Lead + sidebar */
+  .front { padding: 34px 0 10px; }
+  .front-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+  .lead-image { background: var(--card); border: 1px solid var(--rule); aspect-ratio: 16/10; overflow: hidden; display: block; }
+  .lead-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .lead-image:hover img { transform: scale(1.02); }
+  .kicker { font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.14em; color: var(--red-bright); text-transform: uppercase; margin: 16px 0 6px; }
+  .lead h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.08; margin: 0 0 10px; }
+  .lead h2 a:hover { color: var(--gold); }
+  .lead p.dek { color: var(--ink-dim); font-size: 16px; line-height: 1.5; margin: 0; }
+  .read-more { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 0.08em; color: var(--gold); display: inline-block; margin-top: 10px; text-transform: uppercase; }
+  .read-more:hover { text-decoration: underline; }
+  .byline { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: var(--ink-dim); margin-top: 12px; letter-spacing: 0.04em; }
+
+  .sidebar { border-left: 1px solid var(--rule); padding-left: 26px; }
+  .sidebar h3.rail-title {
+    font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.18em;
+    color: var(--gold); text-transform: uppercase; margin: 0 0 14px;
+    border-bottom: 1px solid var(--rule); padding-bottom: 10px;
+  }
+  .sidebar .item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); align-items: center; }
+  .sidebar .item:last-child { border-bottom: none; }
+  .sidebar .thumb { width: 64px; height: 64px; background: var(--card); border: 1px solid var(--rule); flex-shrink: 0; overflow: hidden; display: block; }
+  .sidebar .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .sidebar h4 { font-family: 'Playfair Display', Georgia, serif; font-size: 15px; line-height: 1.25; margin: 0; }
+  .sidebar h4 a:hover { color: var(--gold); }
+  .sidebar .item .kicker { margin: 0 0 3px; font-size: 10px; }
+
+  /* Desks grid */
+  .desks { padding: 40px 0 10px; }
+  .section-title {
+    font-family: Helvetica, Arial, sans-serif; font-size: 12px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-dim); text-align: center; margin: 0 0 26px;
+    position: relative;
+  }
+  .section-title::before, .section-title::after {
+    content: ""; position: absolute; top: 50%; width: 30%; height: 1px; background: var(--rule);
+  }
+  .section-title::before { left: 0; } .section-title::after { right: 0; }
+
+  .desk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .desk-card { background: var(--paper); border: 1px solid var(--rule); display: flex; flex-direction: column; }
+  .desk-card .thumb { aspect-ratio: 4/3; background: var(--card); overflow: hidden; border-bottom: 1px solid var(--rule); display: block; }
+  .desk-card .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .desk-card .thumb:hover img { transform: scale(1.03); }
+  .desk-card .body { padding: 16px 18px 20px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+  .desk-card .kicker { margin: 0 0 6px; }
+  .desk-card h4 { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; line-height: 1.25; margin: 0 0 8px; }
+  .desk-card h4 a:hover { color: var(--gold); }
+  .desk-card p { font-size: 13px; color: var(--ink-dim); line-height: 1.5; margin: 0 0 12px; }
+
+  /* Sign-off */
+  .signoff { padding: 40px 0 10px; text-align: center; }
+  .signoff p { font-family: Georgia, serif; font-style: italic; color: var(--ink-dim); font-size: 15px; max-width: 520px; margin: 0 auto; }
+  .signoff .sig { margin-top: 14px; font-family: 'Playfair Display', serif; font-size: 16px; }
+
+  /* Footer */
+  footer { background: var(--paper); border-top: 2px solid var(--rule); margin-top: 44px; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .foot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 34px 0; }
+  .foot-grid h5 { font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; margin: 0 0 12px; }
+  .foot-grid a { display: block; font-family: Helvetica, Arial, sans-serif; font-size: 13px; color: var(--ink-dim); text-decoration: none; margin-bottom: 8px; }
+  .foot-grid a:hover { color: var(--ink); }
+  .fine-print {
+    border-top: 1px solid var(--rule); padding: 16px 0 26px; text-align: center;
+    font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: var(--ink-dim); letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 760px) {
+    .front-grid { grid-template-columns: 1fr; }
+    .sidebar { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 20px; margin-top: 20px; }
+    .desk-grid { grid-template-columns: 1fr 1fr; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .desk-grid { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr; }
+    .utility .wrap { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Archived issue — frozen, do not edit -->
+
+<div class="utility">
+  <div class="wrap">
+    <span>Night Edition &nbsp;&middot;&nbsp; September 20, 2026 &nbsp;&middot;&nbsp; Issue No. 01</span>
+    <nav>
+      <a href="archive.html">Archive</a>
+      <a href="https://jawsatak47.myspreadshop.com/">Shop</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
+</div>
+
+<div class="masthead">
+  <div class="eyebrow">JawsAtak &nbsp;&mdash;&nbsp; Dispatched Weekly</div>
+  <h1>SHARK<span>WEEKLY</span></h1>
+  <div class="tagline">JawsAtak weekly updates.</div>
+  <svg class="drip" viewBox="0 0 320 22" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,4 L320,4 L320,8 L300,8 C298,16 292,22 286,22 C280,22 275,15 274,8 L214,8 C212,17 206,22 200,22 C194,22 189,14 188,8 L96,8 C94,18 88,22 83,22 C78,22 73,15 72,8 L0,8 Z"/>
+  </svg>
+</div>
+
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="tag">BREAKING NEWS</span>
+    <span class="item">Medford Bartlett & Middleford Mural in Progress! &mdash;</span>
+    <span class="item">JawsAtak47 New Album 'Tony SHarks' out soon! &mdash;</span>
+    <span class="item">JawsAtak47 ft Mistah FAB track dropping soon! &mdash;</span>
+    <span class="tag">BREAKING NEWS</span>
+    <span class="item">Medford Bartlett & Middleford Mural in Progress! &mdash;</span>
+    <span class="item">JawsAtak47 New Album 'Tony SHarks' out soon! &mdash;</span>
+    <span class="item">JawsAtak47 ft Mistah FAB track dropping soon! &mdash;</span>
+  </div>
+</div>
+
+<div class="desk-nav">
+  <div class="wrap">
+    <a href="#drawings">Drawings</a>
+    <a href="#paintings">Paintings</a>
+    <a href="#commissions">Commissions</a>
+    <a href="#shows">Shows &amp; Expos</a>
+    <a href="#merch">Merch</a>
+    <a href="#experimental">Experimental</a>
+  </div>
+</div>
+
+<div class="wrap front">
+  <div class="front-grid">
+    <!-- COVER STORY -->
+    <div class="lead">
+      <a href="https://jawsatak47.github.io/Bartlett-Middleford/" class="lead-image">
+        <img src="4_verti_copy 2 copy.png" alt="This week's lead piece">
+      </a>
+      <div class="kicker">Cover Story</div>
+      <h2><a href="https://jawsatak47.github.io/Bartlett-Middleford/">Bartlett-Middleford Mural Progerss</a></h2>
+      <p class="dek">After lots of revisions and back and forths, we now have the mural underway! &mdash; 2 down, 2 to go!.</p>
+      <div><a href="https://jawsatak47.github.io/Bartlett-Middleford/" class="read-more">Read Full Article &rarr;</a></div>
+      <div class="byline">By Jaws &nbsp;&middot;&nbsp; QuarkForce</div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h3 class="rail-title">Also This Week</h3>
+
+      <div class="item">
+        <a href="https://jawsatak47.github.io/TonySharks/" class="thumb"><img src="TonySharks cover copy.png" alt=""></a>
+        <div>
+          <div class="kicker">Music</div>
+          <h4><a href="https://jawsatak47.github.io/TonySharks/">Tony SHarks Album Very Soon!</a></h4>
+        </div>
+      </div>
+
+      <div class="item">
+        <a href="https://jawsatak47.github.io/Bartlett-Middleford/" class="thumb"><img src="muralstart.png" alt=""></a>
+        <div>
+          <div class="kicker">Mural Update</div>
+          <h4><a href="https://jawsatak47.github.io/Bartlett-Middleford/">2 down 2 to go!</a></h4>
+        </div>
+      </div>
+
+      <div class="item">
+        <a href="https://jawsatak47.myspreadshop.com/" class="thumb"><img src="AjaEje ad copy.png" alt=""></a>
+        <div>
+          <div class="kicker">Shop</div>
+          <h4><a href="https://jawsatak47.myspreadshop.com/">New Merch!</a></h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap desks">
+  <div class="section-title">This Week's Waves</div>
+  <div class="desk-grid">
+
+    <!-- DRAWINGS -->
+    <div class="desk-card" id="drawings">
+      <a href="https://jawsatak47.github.io/Infographics/" class="thumb">
+        <img src="bluejay1 copy.png" alt="Drawings">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">Drawings</div>
+          <h4><a href="https://jawsatak47.github.io/Infographics/">Animal Infographics by Jaws &mdash; digital animals</a></h4>
+          <p>Digital &mdash; JawsAtak Infographics animal artwork.</p>
+        </div>
+        <div><a href="https://youtu.be/vdR-tQ_SYzw?si=cHmOGdDDT2qnhur1" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- PAINTINGS -->
+    <div class="desk-card" id="paintings">
+      <a href="https://jawsatak47.wixsite.com/jaws" class="thumb">
+        <img src="IMG_2282.JPG" alt="Paintings">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">Painting in progress</div>
+          <h4><a href="https://jawsatak47.wixsite.com/jaws">-utitled- &mdash; canvas</a></h4>
+          <p>Progress underway!</p>
+        </div>
+        <div><a href="PAINTINGS_ARTICLE_LINK_HERE" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- COMMISSIONS -->
+    <div class="desk-card" id="commissions">
+      <a href="https://jawsatak47.github.io/jawscommercial/" class="thumb">
+        <img src="Screen Shot 2026-09-20 at 11.13.16 PM.png" alt="Commission work">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">Commission Work</div>
+          <h4><a href="https://jawsatak47.github.io/jawscommercial/">Moxi Cycling &mdash; New t-shirt design</a></h4>
+          <p>Happy to collaborate with Hedi at Moxi.</p>
+        </div>
+        <div><a href="https://jawsatak47.github.io/jawscommercial/" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- SHOWS -->
+    <div class="desk-card" id="shows">
+      <a href="https://jawsatak47.github.io/MonsTober-stage1/#sponsor" class="thumb">
+        <img src="CW mon v4 copy.png" alt="Shows and expos">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">Shows, Expos &amp; Contests</div>
+          <h4><a href="https://jawsatak47.github.io/MonsTober-stage1/#sponsor">MonsTober &mdash; Canvas Wars</a></h4>
+          <p>October 3rd, Phoenix Phoodery, 5 artists Monster Competition! &mdash; Mark vs Pauly vs Bernard vs Faith vs Rooster...</p>
+        </div>
+        <div><a href="https://jawsatak47.github.io/MonsTober-stage1/#sponsor" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- MERCH -->
+    <div class="desk-card" id="merch">
+      <a href="https://jawsatak47.github.io/QuarkZine-Homease/" class="thumb">
+        <img src="QZi9 FC copy.png" alt="Merch">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">Merch</div>
+          <h4><a href="https://jawsatak47.github.io/QuarkZine-Homease/">QuarkZine i9 &mdash; QuarkZine</a></h4>
+          <p>What just dropped or restocked, and where to grab it.</p>
+        </div>
+        <div><a href="https://jawsatak47.github.io/QuarkZine-Homease/" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- EXPERIMENTAL -->
+    <div class="desk-card" id="experimental">
+      <a href="https://www.boardpusher.com/profile/SinicalSkateCo?pg=2" class="thumb">
+        <img src="SinicalMural.png" alt="Experimental work">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">New &amp; Experimental</div>
+          <h4><a href="https://www.boardpusher.com/profile/SinicalSkateCo?pg=2">SinicalSkateboards / Mural decks &mdash; skateboard decks</a></h4>
+          <p>Sinical Skateboards.</p>
+        </div>
+        <div><a href="https://www.boardpusher.com/profile/SinicalSkateCo?pg=2" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="signoff">
+  <p>That's the week. Back at it &mdash; more soon.</p>
+  <div class="sig">&mdash; Jaws</div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h5>Sections</h5>
+        <a href="#drawings">Drawings</a>
+        <a href="#paintings">Paintings</a>
+        <a href="#commissions">Commissions</a>
+      </div>
+      <div>
+        <h5>More Desks</h5>
+        <a href="#shows">Shows &amp; Expos</a>
+        <a href="#merch">Merch</a>
+        <a href="#experimental">Experimental</a>
+      </div>
+      <div>
+        <h5>The Network</h5>
+        <a href="https://jawsatak47.github.io/Megalodon/">JAWS CENTRAL</a>
+        <a href="https://jawsatak47.github.io/QuarkZine-Homease/">QuarkZine</a>
+        <a href="https://jawsatak47.github.io/JawsAtak47Music/">JawsAtak47 Music</a>
+      </div>
+      <div>
+        <h5>Follow</h5>
+        <a href="#">Instagram</a>
+        <a href="https://open.spotify.com/artist/2X4pRUUfHnYaTVst5EgWrW?si=BjjdyAAPR3yrIEf-qj93Jw">Spotify</a>
+        <a href="https://www.youtube.com/@jawsatak47">YouTube</a>
+      </div>
+    </div>
+    <div class="fine-print">
+      &copy; 2026 JawsAtak47 Media &nbsp;&middot;&nbsp; Medford, Oregon &nbsp;&middot;&nbsp; Printed under moonlight, every week. &nbsp;&middot;&nbsp; <a href="archive.html">Browse past issues &rarr;</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
