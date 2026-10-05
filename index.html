@@ -2,859 +2,450 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Canvas Wars: MonsTober — Live Vote & Gallery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SharkWeekly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@400;500;600&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#0b0e08; --card:#12160d; --card2:#171c11; --border:#2b331e;
-  --ink:#eae5d4; --muted:#7d7f6d;
-  --green:#6fbf3f; --green-dim:#3d6b26; --green-glow:#9be86a;
-  --orange:#ff7a1a; --gold:#c9a227;
-}
-body{ background:var(--bg); color:var(--ink); font-family:'Barlow',sans-serif; min-height:100vh; }
-.bebas{ font-family:'Bebas Neue',sans-serif; }
-.barlow{ font-family:'Barlow Condensed',sans-serif; }
+  :root {
+    --bg: #0a0a09;
+    --paper: #17150f;
+    --card: #1e1b14;
+    --ink: #e9e1cb;
+    --ink-dim: #a89f89;
+    --rule: #3a3427;
+    --red: #a3181a;
+    --red-bright: #c8261f;
+    --gold: #c9a24a;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #ece3c9;
+      --paper: #f5eed9;
+      --card: #faf4e4;
+      --ink: #1b1710;
+      --ink-dim: #6e6650;
+      --rule: #d3c69f;
+      --red: #8c1416;
+      --red-bright: #a3181a;
+      --gold: #8a6a1f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a0a09; --paper: #17150f; --card: #1e1b14; --ink: #e9e1cb;
+    --ink-dim: #a89f89; --rule: #3a3427; --red: #a3181a; --red-bright: #c8261f; --gold: #c9a24a;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); scroll-behavior: smooth; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(163,24,26,0.06), transparent 60%),
+      radial-gradient(ellipse at 100% 100%, rgba(0,0,0,0.4), transparent 60%);
+  }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--gold); }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
 
-@keyframes pulseGlow{0%,100%{box-shadow:0 0 6px var(--green),0 0 14px #6fbf3f55;}50%{box-shadow:0 0 14px var(--green),0 0 32px #6fbf3f88;}}
-@keyframes goldGlow{0%,100%{box-shadow:0 0 6px var(--gold),0 0 14px #c9a22755;}50%{box-shadow:0 0 14px var(--gold),0 0 32px #c9a22788;}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-@keyframes noise{0%{opacity:.03;}33%{opacity:.05;}66%{opacity:.02;}100%{opacity:.04;}}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.glow-green{ animation:pulseGlow 2s ease-in-out infinite; }
-.glow-gold{ animation:goldGlow 2s ease-in-out infinite; }
-.fade-up{ animation:fadeUp .4s ease-out forwards; }
-.blink{ animation:blink 1s step-end infinite; }
-@media (prefers-reduced-motion:reduce){ .glow-green,.glow-gold,.fade-up,.blink{ animation:none; } }
+  /* Utility bar */
+  .utility {
+    background: var(--bg);
+    border-bottom: 1px solid var(--rule);
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .utility .wrap { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; padding-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+  .utility nav a { text-decoration: none; margin-left: 16px; color: var(--ink-dim); }
+  .utility nav a:hover { color: var(--gold); }
 
-.noise-layer{ position:fixed; inset:0; pointer-events:none; z-index:9999;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity:.035; mix-blend-mode:overlay; animation:noise .12s steps(1) infinite; }
-.scanlines{ position:fixed; inset:0; pointer-events:none; z-index:9998;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px); }
-.vignette{ position:fixed; inset:0; pointer-events:none; z-index:9997;
-  background:radial-gradient(ellipse 120% 120% at 50% 50%, transparent 55%, rgba(0,0,0,0.45) 100%); }
+  /* Masthead */
+  .masthead { text-align: center; padding: 34px 20px 0; }
+  .masthead .portal-welcome {
+    display: inline-block;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+    padding: 3px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    background: var(--paper);
+    transition: all 0.2s ease;
+  }
+  .masthead .portal-welcome:hover {
+    color: var(--ink);
+    border-color: var(--gold);
+    background: var(--card);
+  }
+  .masthead .eyebrow {
+    font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.25em;
+    color: var(--red-bright); margin-bottom: 6px; margin-top: 4px;
+  }
+  .masthead h1 {
+    font-family: 'Anton', Impact, sans-serif;
+    font-weight: 400;
+    font-size: clamp(42px, 9vw, 88px);
+    letter-spacing: 0.01em;
+    margin: 0;
+    line-height: 0.9;
+    color: var(--ink);
+    text-shadow: 0 2px 0 rgba(0,0,0,0.6);
+  }
+  .masthead h1 span { color: var(--red-bright); }
+  .masthead .tagline {
+    font-family: Georgia, serif; font-style: italic; color: var(--ink-dim);
+    font-size: 14px; margin-top: 6px;
+  }
+  .drip { display: block; margin: 14px auto 0; width: 320px; max-width: 70%; height: 22px; }
+  .drip path { fill: var(--red); }
 
-.wrap{ max-width:1250px; margin:0 auto; padding:0 clamp(1rem,4vw,3rem) 4rem; }
+  /* Ticker */
+  .ticker-bar { background: var(--red); overflow: hidden; margin-top: 22px; border-top: 1px solid rgba(0,0,0,0.3); border-bottom: 1px solid rgba(0,0,0,0.3); }
+  .ticker-bar .tag {
+    display: inline-block; background: var(--bg); color: var(--ink);
+    font-family: Helvetica, Arial, sans-serif; font-weight: bold; font-size: 12px;
+    letter-spacing: 0.1em; padding: 8px 14px; flex-shrink: 0;
+  }
+  .ticker-track {
+    display: flex; align-items: center; white-space: nowrap;
+    animation: scroll-left 12s linear infinite;
+  }
+  .ticker-track span.item {
+    font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold;
+    color: #fff; padding: 8px 28px 8px 0;
+  }
+  @keyframes scroll-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
 
-/* header */
-.hero{ background:radial-gradient(ellipse 900px 400px at 50% -20%, rgba(111,191,63,0.12), transparent 60%), linear-gradient(180deg,#12160d 0%,#0b0e08 100%);
-  border-bottom:1px solid var(--border); padding:1.6rem clamp(1rem,4vw,3rem); }
-.hero-inner{ max-width:1250px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
-.title-row{ display:flex; align-items:baseline; gap:.6rem; flex-wrap:wrap; }
-.t-canvas{ font-size:clamp(2rem,6vw,3.6rem); line-height:.9; letter-spacing:.02em; color:var(--ink); text-transform:uppercase; }
-.t-wars{ font-size:clamp(2rem,6vw,3.6rem); line-height:.9; letter-spacing:.02em; color:var(--ink); text-transform:uppercase; }
-.t-mons{
-  font-family:'Rubik Wet Paint',cursive; font-weight:400; font-size:clamp(2rem,7vw,3.4rem); line-height:.9;
-  color:var(--green); text-shadow:2px 2px 0 rgba(0,0,0,0.5), 0 0 26px rgba(111,191,63,0.4);
-  -webkit-text-stroke:1px rgba(0,0,0,0.4); margin-left:.2rem;
-}
-.hero-sub{ color:var(--muted); font-size:.8rem; letter-spacing:.12em; font-weight:600; margin-top:.5rem; text-transform:uppercase; font-family:'Barlow Condensed',sans-serif; }
-.hero-right{ display:flex; flex-direction:column; align-items:flex-end; gap:.35rem; }
-.live-chip{ font-family:'Barlow Condensed',sans-serif; background:var(--green); color:#0b0e08; font-size:.65rem; font-weight:700; letter-spacing:.15em; padding:2px 8px; border-radius:2px; }
-.status-closed{ background:#1a1e13; color:var(--orange); border:1px solid #ff7a1a40; }
-.hero-meta{ color:var(--muted); font-size:.8rem; font-family:'Barlow Condensed',sans-serif; }
-.prize-badges{ display:flex; gap:.4rem; flex-wrap:wrap; justify-content:flex-end; }
-.prize-badge{ font-size:.8rem; letter-spacing:.08em; padding:2px 10px; border-radius:2px; font-family:'Bebas Neue',sans-serif; }
-.pb-1{ background:#ff7a1a18; border:1px solid #ff7a1a40; color:var(--orange); }
-.pb-2{ background:#1a1e13; border:1px solid var(--border); color:#a8a893; }
-.pb-3{ background:#1a1e13; border:1px solid var(--border); color:#7d7f6d; }
-.pb-4{ background:#1a1e13; border:1px solid var(--border); color:#5c5e4f; }
+  /* Section nav */
+  .desk-nav { background: var(--paper); border-bottom: 1px solid var(--rule); }
+  .desk-nav .wrap { display: flex; gap: 22px; flex-wrap: wrap; padding: 10px 20px; justify-content: center; }
+  .desk-nav a {
+    font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.12em;
+    text-decoration: none; color: var(--ink-dim); text-transform: uppercase;
+  }
+  .desk-nav a:hover { color: var(--gold); }
 
-/* tabs */
-.tabbar{ border-bottom:1px solid var(--border); background:var(--bg); position:sticky; top:0; z-index:100; backdrop-filter:blur(8px); }
-.tabbar-inner{ max-width:1250px; margin:0 auto; padding:0 clamp(.5rem,3vw,2rem); display:flex; overflow-x:auto; }
-.tab-btn{ font-family:'Bebas Neue',sans-serif; letter-spacing:.06em; font-size:1rem; padding:.6rem 1.1rem; color:#5c5e4f; border-bottom:2px solid transparent; cursor:pointer; transition:color .2s; white-space:nowrap; background:none; border-top:none; border-left:none; border-right:none; text-decoration:none; display:inline-block; }
-.tab-btn:hover{ color:#a8a893; }
-.tab-active{ color:var(--green-glow)!important; border-bottom-color:var(--green)!important; }
+  /* Lead + sidebar */
+  .front { padding: 34px 0 10px; }
+  .front-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+  .lead-image { background: var(--card); border: 1px solid var(--rule); aspect-ratio: 16/10; overflow: hidden; display: block; }
+  .lead-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .lead-image:hover img { transform: scale(1.02); }
+  .kicker { font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.14em; color: var(--red-bright); text-transform: uppercase; margin: 16px 0 6px; }
+  .lead h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.08; margin: 0 0 10px; }
+  .lead h2 a:hover { color: var(--gold); }
+  .lead p.dek { color: var(--ink-dim); font-size: 16px; line-height: 1.5; margin: 0; }
+  .read-more { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 0.08em; color: var(--gold); display: inline-block; margin-top: 10px; text-transform: uppercase; }
+  .read-more:hover { text-decoration: underline; }
+  .byline { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: var(--ink-dim); margin-top: 12px; letter-spacing: 0.04em; }
 
-.section-head{ font-family:'Bebas Neue',sans-serif; letter-spacing:.08em; font-size:1.05rem; color:#8a8c78; margin:1.75rem 0 1rem; padding-bottom:.4rem; border-bottom:1px solid var(--border); }
+  .sidebar { border-left: 1px solid var(--rule); padding-left: 26px; }
+  .sidebar h3.rail-title {
+    font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.18em;
+    color: var(--gold); text-transform: uppercase; margin: 0 0 14px;
+    border-bottom: 1px solid var(--rule); padding-bottom: 10px;
+  }
+  .sidebar .item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); align-items: center; }
+  .sidebar .item:last-child { border-bottom: none; }
+  .sidebar .thumb { width: 64px; height: 64px; background: var(--card); border: 1px solid var(--rule); flex-shrink: 0; overflow: hidden; display: block; }
+  .sidebar .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .sidebar h4 { font-family: 'Playfair Display', Georgia, serif; font-size: 15px; line-height: 1.25; margin: 0; }
+  .sidebar h4 a:hover { color: var(--gold); }
+  .sidebar .item .kicker { margin: 0 0 3px; font-size: 10px; }
 
-/* strip cards */
-.strip{ display:flex; gap:.75rem; margin:1.5rem 0; flex-wrap:wrap; }
-.strip-card{ background:var(--card); border:1px solid var(--border); border-radius:4px; padding:.7rem 1.2rem; display:flex; align-items:center; gap:.7rem; }
-.strip-num{ font-family:'Bebas Neue',sans-serif; font-size:1.6rem; }
-.strip-label{ font-family:'Barlow Condensed',sans-serif; color:#9c9e8a; font-size:.75rem; font-weight:700; letter-spacing:.1em; line-height:1.3; }
+  /* Desks grid */
+  .desks { padding: 40px 0 10px; }
+  .section-title {
+    font-family: Helvetica, Arial, sans-serif; font-size: 12px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-dim); text-align: center; margin: 0 0 26px;
+    position: relative;
+  }
+  .section-title::before, .section-title::after {
+    content: ""; position: absolute; top: 50%; width: 30%; height: 1px; background: var(--rule);
+  }
+  .section-title::before { left: 0; } .section-title::after { right: 0; }
 
-/* artist grid */
-.artist-grid{ display:grid; grid-template-columns:repeat(5, 1fr); gap:.75rem; }
-@media (max-width: 960px){ .artist-grid{ grid-template-columns:repeat(2, 1fr); } }
-@media (max-width: 520px){ .artist-grid{ grid-template-columns:1fr; } }
+  .desk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .desk-card { background: var(--paper); border: 1px solid var(--rule); display: flex; flex-direction: column; }
+  .desk-card .thumb { aspect-ratio: 4/3; background: var(--card); overflow: hidden; border-bottom: 1px solid var(--rule); display: block; }
+  .desk-card .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .desk-card .thumb:hover img { transform: scale(1.03); }
+  .desk-card .body { padding: 16px 18px 20px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+  .desk-card .kicker { margin: 0 0 6px; }
+  .desk-card h4 { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; line-height: 1.25; margin: 0 0 8px; }
+  .desk-card h4 a:hover { color: var(--gold); }
+  .desk-card p { font-size: 13px; color: var(--ink-dim); line-height: 1.5; margin: 0 0 12px; }
 
-.artist-card{ background:var(--card); border:1px solid var(--border); border-radius:4px; padding:1rem; transition:transform .2s,border-color .2s; }
-.artist-card:hover{ transform:translateY(-3px); border-color:#6fbf3f44; }
-.artist-card.is-voted{ border-color:var(--green); }
-.artist-top{ display:flex; align-items:flex-start; gap:.6rem; margin-bottom:1rem; }
-.avatar{ width:50px; height:50px; border-radius:4px; flex-shrink:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-.avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
-.avatar span{ font-family:'Bebas Neue',sans-serif; font-size:1rem; }
-.artist-name-input{ font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:.02em; background:transparent; border:none; color:var(--ink); width:100%; outline:none; }
-.artist-name-input:focus{ color:var(--green-glow); }
-.artist-img-input{ font-family:'Barlow Condensed',sans-serif; font-size:.75rem; background:#0b0e08; border:1px solid var(--border); color:var(--ink); width:100%; padding:2px 4px; border-radius:2px; margin-top:4px; }
+  /* Sign-off */
+  .signoff { padding: 40px 0 10px; text-align: center; }
+  .signoff p { font-family: Georgia, serif; font-style: italic; color: var(--ink-dim); font-size: 15px; max-width: 520px; margin: 0 auto; }
+  .signoff .sig { margin-top: 14px; font-family: 'Playfair Display', serif; font-size: 16px; }
 
-.artist-name-link {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.15rem;
-  letter-spacing: .02em;
-  color: var(--ink);
-  text-decoration: none;
-  transition: color .2s ease;
-  display: inline-block;
-  line-height: 1.1;
-}
-.artist-name-link:hover {
-  color: var(--green-glow);
-  text-decoration: underline;
-}
-.artist-subinfo {
-  font-family: 'Barlow Condensed', sans-serif;
-  color: var(--green);
-  font-size: .72rem;
-  letter-spacing: .05em;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-top: 1px;
-}
+  /* Footer */
+  footer { background: var(--paper); border-top: 2px solid var(--rule); margin-top: 44px; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .foot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 34px 0; }
+  .foot-grid h5 { font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; margin: 0 0 12px; }
+  .foot-grid a { display: block; font-family: Helvetica, Arial, sans-serif; font-size: 13px; color: var(--ink-dim); text-decoration: none; margin-bottom: 8px; }
+  .foot-grid a:hover { color: var(--ink); }
+  .fine-print {
+    border-top: 1px solid var(--rule); padding: 16px 0 26px; text-align: center;
+    font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: var(--ink-dim); letter-spacing: 0.04em;
+  }
 
-.artist-meta{ font-family:'Barlow Condensed',sans-serif; color:#5c5e4f; font-size:.68rem; letter-spacing:.04em; margin-top:2px; }
-.vote-btn{ font-family:'Bebas Neue',sans-serif; letter-spacing:.05em; font-size:.9rem; padding:.45rem .8rem; border-radius:2px; border:1px solid #6fbf3f50; background:transparent; color:var(--green-glow); cursor:pointer; transition:all .15s; width:100%; }
-.vote-btn:hover:not(:disabled){ background:var(--green); color:#0b0e08; }
-.vote-btn:disabled{ opacity:.4; cursor:not-allowed; }
-.voted-btn{ background:var(--green)!important; color:#0b0e08!important; border-color:var(--green)!important; opacity:1!important; cursor:default!important; }
-.entry-track{ background:#1a1e13; height:4px; border-radius:2px; margin-top:.7rem; overflow:hidden; }
-.entry-bar{ height:4px; border-radius:2px; transition:width .6s ease; }
-.entry-pct{ font-family:'Barlow Condensed',sans-serif; color:#6a6c5c; font-size:.68rem; margin-top:.3rem; text-align:right; }
-
-/* leaderboard */
-.rank-row{ display:flex; align-items:center; gap:1rem; background:var(--card); border:1px solid var(--border); border-radius:4px; padding:.9rem 1.2rem; margin-bottom:.6rem; }
-.rank-badge{ font-family:'Bebas Neue',sans-serif; font-size:1.4rem; width:2.2rem; height:2.2rem; display:flex; align-items:center; justify-content:center; border-radius:2px; flex-shrink:0; }
-.rb-1{ background:#c9a22720; color:var(--gold); border:1px solid #c9a22740; }
-.rb-2{ background:#6fbf3f20; color:var(--green-glow); border:1px solid #6fbf3f40; }
-.rb-other{ background:#1a1e13; color:#6a6c5c; border:1px solid var(--border); }
-.rank-name{ font-family:'Bebas Neue',sans-serif; font-size:1.05rem; flex-shrink:0; width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.rank-track{ flex:1; background:#1a1e13; border-radius:2px; height:14px; overflow:hidden; }
-.rank-fill{ height:100%; background:linear-gradient(90deg,var(--green-dim),var(--green)); border-radius:2px; transition:width .5s ease; }
-.rank-count{ font-family:'Bebas Neue',sans-serif; color:var(--orange); width:40px; text-align:right; }
-
-/* Event Gallery Grid Styles */
-.gallery-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1rem; margin-top:1rem; }
-.gallery-card{ background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; position:relative; cursor:pointer; display:flex; flex-direction:column; text-decoration:none; color:inherit; }
-.gallery-img-wrap{ width:100%; aspect-ratio:4/3; background:#050704; overflow:hidden; display:flex; align-items:center; justify-content:center; }
-.gallery-img-wrap img{ width:100%; height:100%; object-fit:cover; object-position:center; transition:transform .3s ease; }
-.gallery-card:hover img{ transform:scale(1.04); }
-.gallery-caption{ padding:.6rem .8rem; font-family:'Barlow Condensed',sans-serif; color:var(--ink); font-size:.85rem; background:var(--card2); border-top:1px solid var(--border); margin-top:auto; }
-
-/* judges */
-.judge-gate{ text-align:center; padding:3rem 1rem; }
-.pin-row{ display:flex; gap:.5rem; justify-content:center; margin-top:1rem; flex-wrap:wrap; }
-.pin-row input{ font-family:'Barlow Condensed',sans-serif; background:var(--card); border:1px solid var(--border); color:var(--ink); padding:.6rem 1rem; border-radius:2px; width:160px; text-align:center; letter-spacing:.08em; }
-.pin-row button{ font-family:'Bebas Neue',sans-serif; letter-spacing:.06em; background:var(--green); color:#0b0e08; border:none; padding:.6rem 1.4rem; border-radius:2px; cursor:pointer; }
-.pin-row button:hover{ background:var(--green-glow); }
-.pin-err{ color:var(--orange); font-size:.75rem; margin-top:.6rem; min-height:1em; font-family:'Barlow Condensed',sans-serif; }
-
-.judge-tabs{ display:flex; gap:.5rem; margin-bottom:1.25rem; flex-wrap:wrap; }
-.judge-tab{ font-family:'Bebas Neue',sans-serif; letter-spacing:.05em; font-size:.9rem; padding:.5rem 1rem; border-radius:2px; border:1px solid var(--border); background:transparent; color:#6a6c5c; cursor:pointer; }
-.judge-tab.active{ color:var(--gold); border-color:#c9a22750; background:#c9a22712; }
-
-/* Judge Rank Selection Styling */
-.judge-rank-box{ background:var(--card2); border:1px solid var(--border); border-radius:4px; padding:1.2rem; margin-bottom:1.5rem; }
-.judge-rank-box h3{ font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:var(--gold); letter-spacing:.05em; margin-bottom:.8rem; }
-.rank-select-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:.8rem; }
-@media (max-width: 768px){ .rank-select-grid{ grid-template-columns:1fr; } }
-.rank-select-field label{ display:block; font-family:'Barlow Condensed',sans-serif; font-size:.8rem; color:var(--ink); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; font-weight:600; }
-.rank-select-field select{ width:100%; background:#0b0e08; border:1px solid var(--border); color:var(--ink); border-radius:2px; padding:.55rem; font-family:'Barlow Condensed',sans-serif; font-size:.95rem; outline:none; }
-.rank-select-field select:focus{ border-color:var(--gold); }
-
-.score-block{ background:var(--card2); border:1px solid var(--border); border-radius:4px; padding:1rem 1.2rem; margin-bottom:.75rem; }
-.score-block-name{ font-family:'Bebas Neue',sans-serif; font-size:1.1rem; margin-bottom:.7rem; letter-spacing:.02em; }
-.score-fields{ display:grid; grid-template-columns:repeat(4,1fr); gap:.6rem; }
-.score-field label{ display:block; font-family:'Barlow Condensed',sans-serif; font-size:.65rem; color:#6a6c5c; text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
-.score-field input{ width:100%; background:#0b0e08; border:1px solid var(--border); color:var(--ink); border-radius:2px; padding:.45rem; font-family:'Barlow Condensed',sans-serif; font-size:.95rem; text-align:center; }
-.score-field input:focus{ outline:none; border-color:var(--gold); }
-
-.admin-row{ display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--border); }
-.admin-btn{ font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.8rem; padding:.5rem 1rem; background:transparent; border:1px solid #2a2f1f; color:#6a6c5c; border-radius:2px; cursor:pointer; }
-.admin-btn:hover{ color:#a8a893; border-color:#444a34; }
-.admin-btn.danger:hover{ color:var(--orange); border-color:#ff7a1a60; }
-
-.status-msg{ text-align:center; font-family:'Barlow Condensed',sans-serif; color:#6a6c5c; font-size:.8rem; margin-top:.8rem; min-height:1.2em; }
-.share-note{ text-align:center; color:#3d4030; font-size:.7rem; font-family:'Barlow Condensed',sans-serif; margin-top:.5rem; letter-spacing:.03em; }
-
-footer{ border-top:1px solid var(--border); padding:1.25rem clamp(1rem,4vw,3rem); display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; max-width:1250px; margin:2rem auto 0; }
-.foot-brand{ color:#4a4d3c; font-size:1rem; letter-spacing:.1em; font-family:'Bebas Neue',sans-serif; }
-.foot-rules{ color:#3a3d2e; font-size:.75rem; font-family:'Barlow',sans-serif; }
+  @media (max-width: 760px) {
+    .front-grid { grid-template-columns: 1fr; }
+    .sidebar { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 20px; margin-top: 20px; }
+    .desk-grid { grid-template-columns: 1fr 1fr; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .desk-grid { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr; }
+    .utility .wrap { flex-direction: column; align-items: flex-start; }
+  }
 </style>
 </head>
 <body>
-<div class="noise-layer"></div>
-<div class="scanlines"></div>
-<div class="vignette"></div>
 
-<div class="hero">
-  <div class="hero-inner">
-    <div>
-      <div class="title-row">
-        <span class="bebas t-canvas">CANVAS</span><span class="bebas t-wars">WARS</span><span class="t-mons">MonsTober</span>
-      </div>
-      <div class="hero-sub">Live Illustrative Art Battle · Phoenix Phoodery · Medford, OR</div>
-    </div>
-    <div class="hero-right">
-      <div style="display:flex; align-items:center; gap:.5rem;">
-        <span id="liveChip" class="barlow live-chip status-closed">VOTING CLOSED</span>
-        <span class="barlow" style="color:#8a8c78; font-size:.8rem;">Sat, Oct 3, 2026 · 11AM–5PM</span>
-      </div>
-      <div class="hero-meta">5 Artists · 30"×20" Black Canvas · Black &amp; White Only</div>
-      <div class="prize-badges">
-        <span class="prize-badge pb-1">1ST · $100</span>
-        <span class="prize-badge pb-2">2ND · $75</span>
-        <span class="prize-badge pb-3">3RD · $50</span>
-        <span class="prize-badge pb-4">4TH · $25</span>
-        <span class="prize-badge pb-4">5TH · $25</span>
-      </div>
-    </div>
-  </div>
+<div class="utility">
+  <div class="wrap">
+    <span>Night Edition &nbsp;&middot;&nbsp; October, 2026 &nbsp;&middot;&nbsp; Issue No. 03</span>
+    <nav>
+      <a href="archive.html">Archive</a>
+      <a href="https://jawsatak47.myspreadshop.com/">Shop</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
 </div>
 
-<div class="tabbar">
-  <div class="tabbar-inner">
-    <button class="tab-btn tab-active" data-tab="gallery">📸 PHOTOS</button>
-    <button class="tab-btn" data-tab="vote">🎨 LIVE VOTE</button>
-    <button class="tab-btn" data-tab="leaders">🏆 LEADERBOARD</button>
-    <button class="tab-btn" data-tab="judges">⚖ JUDGES</button>
-    <a class="tab-btn" href="https://jawsatak47.github.io/MonsTober-stage1/" target="_blank" rel="noopener noreferrer">ℹ EVENT INFO</a>
-  </div>
+<div class="masthead">
+  <a href="https://jawsatak47.github.io/Megalodon/" class="portal-welcome">&larr; JawsGraffiti.com Main Portal</a>
+  <div class="eyebrow">JawsAtak &nbsp;&mdash;&nbsp; Dispatched Weekly</div>
+  <h1>SHARK<span>WEEKLY</span></h1>
+  <div class="tagline">JawsAtak weekly updates.</div>
+  <svg class="drip" viewBox="0 0 320 22" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,4 L320,4 L320,8 L300,8 C298,16 292,22 286,22 C280,22 275,15 274,8 L214,8 C212,17 206,22 200,22 C194,22 189,14 188,8 L96,8 C94,18 88,22 83,22 C78,22 73,15 72,8 L0,8 Z"/>
+  </svg>
 </div>
 
-<div class="wrap">
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="tag">BREAKING NEWS</span>
+    <span class="item">CanvasWars WindowWars October 9th! &mdash;</span>
+    <span class="item">Medford Bartlett & Middleford Mural in Progress! 3 or 4 down &mdash;</span>
+    <span class="item">MonsTober event photos out Now! &mdash;</span>
+    <span class="tag">BREAKING NEWS</span>
+    <span class="item">CanvasWars WindowWars October 9th! &mdash;</span>
+    <span class="item">Medford Bartlett & Middleford Mural in Progress! 3 or 4 down &mdash;</span>
+    <span class="item">MonsTober event photos out Now! &mdash;</span>
+  </div>
+</div>
 
-  <!-- EVENT PHOTOS TAB (DEFAULT MAIN TAB) -->
-  <div id="panel-gallery">
-    <div class="section-head">EVENT GALLERY &amp; HIGHLIGHTS</div>
-    <div id="eventGallery" class="gallery-grid"></div>
-  </div>
+<div class="desk-nav">
+  <div class="wrap">
+    <a href="#drawings">Drawings</a>
+    <a href="#paintings">Paintings</a>
+    <a href="#commissions">Commissions</a>
+    <a href="#shows">Shows &amp; Expos</a>
+    <a href="#merch">Merch</a>
+    <a href="#experimental">Experimental</a>
+  </div>
+</div>
 
-  <!-- VOTE TAB -->
-  <div id="panel-vote" style="display:none;">
-    <div class="strip">
-      <div class="strip-card">
-        <span class="bebas strip-num" style="color:var(--orange);">3</span>
-        <span class="barlow strip-label">GUEST<br>JUDGES</span>
-      </div>
-      <div class="strip-card">
-        <span class="bebas strip-num" style="color:var(--gold);">LIVE</span>
-        <span class="barlow strip-label">AUDIENCE<br>VOTE VIA APP</span>
-      </div>
-      <div class="strip-card">
-        <span class="bebas strip-num" id="totalVotesNum" style="color:var(--green-glow);">0</span>
-        <span class="barlow strip-label">TOTAL<br>POINTS</span>
-      </div>
-    </div>
+<div class="wrap front">
+  <div class="front-grid">
+    <!-- COVER STORY -->
+    <div class="lead">
+      <a href="https://jawsatak47.github.io/CWSWindowWarsScrappyCraft/" class="lead-image">
+        <img src="windowwars1.png" alt="This week's lead piece">
+      </a>
+      <div class="kicker">Cover Story</div>
+      <h2><a href="https://jawsatak47.github.io/CWSmonstober/">CanvasWars WindowWars October 9th ScrappyCraft Phoenix OR</a></h2>
+      <p class="dek">CanvasWars WindowWars October 9th ScrappyCraft Phoenix OR 4 artist paint on window Live during art walk!  3pm-7pm.</p>
+      <div><a href="https://jawsatak47.github.io/CWSWindowWarsScrappyCraft/" class="read-more">Read Full Article &rarr;</a></div>
+      <div class="byline">By Jaws &nbsp;&middot;&nbsp; QuarkForce</div>
+    </div>
 
-    <div class="section-head">COMPETING ARTISTS</div>
-    <div id="artistGrid" class="artist-grid"></div>
-    <div id="voteStatus" class="status-msg"></div>
-    <div class="share-note">Votes are shared live with everyone viewing this page · one vote per device</div>
-  </div>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h3 class="rail-title">Also This Week</h3>
 
-  <!-- LEADERBOARD TAB -->
-  <div id="panel-leaders" style="display:none;">
-    <div class="section-head">AUDIENCE &amp; JUDGE LEADERBOARD</div>
-    <div id="leaderboard"></div>
-  </div>
+      <div class="item">
+        <a href="https://jawsatak47.github.io/TonySharks/" class="thumb"><img src="TonySharks cover copy.png" alt=""></a>
+        <div>
+          <div class="kicker">Music</div>
+          <h4><a href="https://jawsatak47.github.io/TonySharks/">Tony SHarks Album Very Soon!</a></h4>
+        </div>
+      </div>
 
-  <!-- JUDGES TAB -->
-  <div id="panel-judges" style="display:none;">
-    <div id="judgeGate" class="judge-gate">
-      <div class="bebas" style="font-size:1.3rem; color:#8a8c78; letter-spacing:.05em;">JUDGE ACCESS REQUIRED</div>
-      <div class="pin-row">
-        <input id="pinInput" type="password" placeholder="ENTER PIN" />
-        <button id="pinSubmit">UNLOCK</button>
-      </div>
-      <div id="pinError" class="pin-err"></div>
-    </div>
+      <div class="item">
+        <a href="https://jawsatak47.github.io/Bartlett-Middleford/" class="thumb"><img src="muralstart.png" alt=""></a>
+        <div>
+          <div class="kicker">Mural Updates with photos!</div>
+          <h4><a href="https://jawsatak47.github.io/Bartlett-Middleford/">3 down 1 to go!</a></h4>
+        </div>
+      </div>
 
-    <div id="judgePanel" style="display:none;">
-      <div class="section-head">JUDGE PANEL</div>
-      <div class="judge-tabs" id="judgeSelect"></div>
-      
-      <!-- Top 3 Judge Votes -->
-      <div class="judge-rank-box">
-        <h3>👑 JUDGE TOP 3 RANKINGS (ADDS TO LIVE TALLY)</h3>
-        <div class="rank-select-grid">
-          <div class="rank-select-field">
-            <label>1st Place (+3 Points)</label>
-            <select id="judgeRank1"><option value="">-- Select 1st Place --</option></select>
-          </div>
-          <div class="rank-select-field">
-            <label>2nd Place (+2 Points)</label>
-            <select id="judgeRank2"><option value="">-- Select 2nd Place --</option></select>
-          </div>
-          <div class="rank-select-field">
-            <label>3rd Place (+1 Point)</label>
-            <select id="judgeRank3"><option value="">-- Select 3rd Place --</option></select>
-          </div>
-        </div>
-      </div>
+      <div class="item">
+        <a href="https://jawsatak47.github.io/CWSmonstober//" class="thumb"><img src="01event1 1.png" alt=""></a>
+        <div>
+          <div class="kicker">MonsTober Event</div>
+          <h4><a href="https://jawsatak47.github.io/CWSmonstober/">Photos Here!</a></h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <div class="section-head">SCORE THE ARTISTS (0 - 10)</div>
-      <div id="scoreFields"></div>
+<div class="wrap desks">
+  <div class="section-title">This Week's Waves</div>
+  <div class="desk-grid">
 
-      <div class="admin-row" id="adminPanel">
-        <button class="admin-btn" id="toggleVotingBtn">OPEN / CLOSE VOTING</button>
-        <button class="admin-btn" id="editNamesBtn">EDIT ARTIST NAMES &amp; PHOTOS</button>
-        <button class="admin-btn danger" id="resetBtn">RESET VOTES &amp; SCORES</button>
-      </div>
-    </div>
-  </div>
+    <!-- DRAWINGS -->
+    <div class="desk-card" id="drawings">
+      <a href="https://jawsatak47.github.io/Infographics/" class="thumb">
+        <img src="orca1.png" alt="Drawings">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">Drawings</div>
+          <h4><a href="https://jawsatak47.github.io/Infographics/">Animal Infographics by Jaws &mdash; digital animals</a></h4>
+          <p>Digital &mdash; JawsAtak Infographics animal artwork.</p>
+        </div>
+        <div><a href="https://youtu.be/vdR-tQ_SYzw?si=cHmOGdDDT2qnhur1" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
 
+    <!-- PAINTINGS -->
+    <div class="desk-card" id="paintings">
+      <a href="https://jawsatak47.github.io/CWSmonstober/" class="thumb">
+        <img src="6066jawsskull.JPG" alt="Paintings">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">Painting I did quick during MonsTober event</div>
+          <h4><a href="https://jawsatak47.github.io/CWSmonstober/">-utitled- &mdash; canvas</a></h4>
+          <p>Full Shop link</p>
+        </div>
+        <div><a href="https://jawsatak47.wixsite.com/jaws" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- COMMISSIONS -->
+    <div class="desk-card" id="commissions">
+      <a href="https://jawsatak47.github.io/jawscommercial/" class="thumb">
+        <img src="Screen Shot 2026-09-20 at 11.13.16 PM.png" alt="Commission work">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">Commission Work</div>
+          <h4><a href="https://jawsatak47.github.io/jawscommercial/">Moxie Cycling &mdash; New t-shirt design</a></h4>
+          <p>Happy to collaborate with Hedi at Moxi.</p>
+        </div>
+        <div><a href="https://jawsatak47.github.io/jawscommercial/" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- SHOWS -->
+    <div class="desk-card" id="shows">
+      <a href="https://jawsatak47.github.io/CWSmonstober/" class="thumb">
+        <img src="01event1 1.png" alt="Shows and expos">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">MonsTober Event Photos Here!</div>
+          <h4><a href="https://jawsatak47.github.io/CWSmonstober/">MonsTober &mdash; Event Photos!</a></h4>
+          <p>Digital &mdash; CanvasWars Monster Battle October 3rd 2026.</p>
+        </div>
+        <div><a href="https://youtu.be/vdR-tQ_SYzw?si=cHmOGdDDT2qnhur1" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- MERCH -->
+    <div class="desk-card" id="merch">
+      <a href="https://jawsatak47.github.io/QuarkZine-Homease/" class="thumb">
+        <img src="QZi9 FC copy.png" alt="Merch">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">Merch</div>
+          <h4><a href="https://jawsatak47.github.io/QuarkZine-Homease/">QuarkZine i9 &mdash; QuarkZine</a></h4>
+          <p>Issue 9 out Now!.</p>
+        </div>
+        <div><a href="https://jawsatak47.github.io/QuarkZine-Homease/" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- EXPERIMENTAL -->
+    <div class="desk-card" id="experimental">
+      <a href="https://www.boardpusher.com/profile/SinicalSkateCo?pg=2" class="thumb">
+        <img src="SinicalMural.png" alt="Experimental work">
+      </a>
+      <div class="body">
+        <div>
+          <div class="kicker">New &amp; Experimental</div>
+          <h4><a href="https://www.boardpusher.com/profile/SinicalSkateCo?pg=2">SinicalSkateboards / Mural decks &mdash; skateboard decks</a></h4>
+          <p>Sinical Skateboards.</p>
+        </div>
+        <div><a href="https://www.boardpusher.com/profile/SinicalSkateCo?pg=2" class="read-more">View Article &rarr;</a></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="signoff">
+  <p>That's the week. Back at it &mdash; more soon.</p>
+  <div class="sig">&mdash; Jaws</div>
 </div>
 
 <footer>
-  <div class="foot-brand">CANVASWARS · MONSTOBER · MEDFORD, OR · 2026</div>
-  <div class="foot-rules">$25 artist entry, returned via prize payout · Black &amp; white only · All materials supplied</div>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h5>Sections</h5>
+        <a href="#drawings">Drawings</a>
+        <a href="#paintings">Paintings</a>
+        <a href="#commissions">Commissions</a>
+      </div>
+      <div>
+        <h5>More Desks</h5>
+        <a href="#shows">Shows &amp; Expos</a>
+        <a href="#merch">Merch</a>
+        <a href="#experimental">Experimental</a>
+      </div>
+      <div>
+        <h5>The Network</h5>
+        <a href="https://jawsatak47.github.io/Megalodon/">JAWS CENTRAL</a>
+        <a href="https://jawsatak47.github.io/QuarkZine-Homease/">QuarkZine</a>
+        <a href="https://jawsatak47.github.io/JawsAtak47Music/">JawsAtak47 Music</a>
+      </div>
+      <div>
+        <h5>Follow</h5>
+        <a href="#">Instagram</a>
+        <a href="https://open.spotify.com/artist/2X4pRUUfHnYaTVst5EgWrW?si=BjjdyAAPR3yrIEf-qj93Jw">Spotify</a>
+        <a href="https://www.youtube.com/@jawsatak47">YouTube</a>
+      </div>
+    </div>
+    <div class="fine-print">
+      &copy; 2026 JawsAtak47 Media &nbsp;&middot;&nbsp; Medford, Oregon &nbsp;&middot;&nbsp; Printed under moonlight, every week. &nbsp;&middot;&nbsp; <a href="archive.html">Browse past issues &rarr;</a>
+    </div>
+  </div>
 </footer>
 
-<!-- FIREBASE MODULE SETUP -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AiZaSyDgJfvykgrSXkuWo_RqKwzBs_61x1JMJXI",
-    authDomain: "cws1-5bb29.firebaseapp.com",
-    projectId: "cws1-5bb29",
-    storageBucket: "cws1-5bb29.firebasestorage.app",
-    messagingSenderId: "104411714001",
-    appId: "1:104411714001:web:8ba3882c734889b68b50f0",
-    measurementId: "G-9VEGH65BTP"
-  };
-
-  /* ==========================================================================
-     EDIT EVENT PHOTOS HERE VIA CODE ONLY (65 SLOTS)
-     ========================================================================== */
-  const STATIC_EVENT_PHOTOS = [
-    { url: '01event1 1.png', caption: 'MonsTober Begins!' },
-    { url: '2allpaint00.JPG', caption: 'Live Action Painting' },
-    { url: '3allpaint.JPG', caption: 'Live Action Painting' },
-    { url: '4allpaintstartcanvasup.JPG', caption: 'MonsTober Highlight 4' },
-    { url: '5allpaintstart1.JPG', caption: 'MonsTober Highlight 5' },
-    { url: '6allpaintstart.JPG', caption: 'MonsTober Highlight 6' },
-    { url: '7allpaintcrowd2.JPG', caption: 'MonsTober Highlight 7' },
-    { url: '8allpaintcrowd.JPG', caption: 'MonsTober Highlight 8' },
-    { url: '9allpaint11.JPG', caption: 'MonsTober Highlight 9' },
-    { url: '10allpaint10.JPG', caption: 'MonsTober Highlight 10' },
-    { url: '11allpaint9.JPG', caption: 'MonsTober Highlight 11' },
-    { url: '12allpaint8.JPG', caption: 'MonsTober Highlight 12' },
-    { url: '13allpaint7.JPG', caption: 'MonsTober Highlight 13' },
-    { url: '14allpaint6+.JPG', caption: 'MonsTober Highlight 14' },
-    { url: '15allpaint5.JPG', caption: 'MonsTober Highlight 15' },
-    { url: '16allpaint3.JPG', caption: 'MonsTober Highlight 16' },
-    { url: '17allpaint2.JPG', caption: 'MonsTober Highlight 17' },
-    { url: '18crowd and summer.JPG', caption: 'MonsTober Highlight 18' },
-    { url: '19faithrooster.JPG', caption: 'MonsTober Highlight 19' },
-    { url: '20faithrooster1.JPG', caption: 'MonsTober Highlight 20' },
-    { url: '21rooterlive2.JPG', caption: 'MonsTober Highlight 21' },
-    { url: '22markLive.png', caption: 'MonsTober Highlight 22' },
-    { url: '22paulie live.png', caption: 'MonsTober Highlight 22' },
-    { url: '23bernardlive.JPG', caption: 'MonsTober Highlight 23' },
-    { url: '24faithlive1.JPG', caption: 'MonsTober Highlight 24' },
-    { url: '25roosterLive.png', caption: 'MonsTober Highlight 24' },
-    { url: '26allpaint1.JPG', caption: 'MonsTober Highlight 26' },
-    { url: '27allpaint4.JPG', caption: 'MonsTober Highlight 27' },
-    { url: '28marklive.JPG', caption: 'MonsTober Highlight 28' },
-    { url: '29markrooster.JPG', caption: 'MonsTober Highlight 29' },
-    { url: '30bernard2 faith3 rooster1 painta.JPG', caption: 'MonsTober Highlight 30' },
-    { url: 'event31.jpg', caption: 'MonsTober Highlight 31' },
-    { url: 'event32.jpg', caption: 'MonsTober Highlight 32' },
-    { url: 'event33.jpg', caption: 'MonsTober Highlight 33' },
-    { url: 'event34.jpg', caption: 'MonsTober Highlight 34' },
-    { url: 'event35.jpg', caption: 'MonsTober Highlight 35' },
-    { url: 'event36.jpg', caption: 'MonsTober Highlight 36' },
-    { url: 'event37.jpg', caption: 'MonsTober Highlight 37' },
-    { url: 'event38.jpg', caption: 'MonsTober Highlight 38' },
-    { url: 'event39.jpg', caption: 'MonsTober Highlight 39' },
-    { url: 'event40.jpg', caption: 'MonsTober Highlight 40' },
-    { url: 'event41.jpg', caption: 'MonsTober Highlight 41' },
-    { url: 'event42.jpg', caption: 'MonsTober Highlight 42' },
-    { url: 'event43.jpg', caption: 'MonsTober Highlight 43' },
-    { url: 'event44.jpg', caption: 'MonsTober Highlight 44' },
-    { url: 'event45.jpg', caption: 'MonsTober Highlight 45' },
-    { url: 'event46.jpg', caption: 'MonsTober Highlight 46' },
-    { url: 'event47.jpg', caption: 'MonsTober Highlight 47' },
-    { url: 'event48.jpg', caption: 'MonsTober Highlight 48' },
-    { url: 'event49.jpg', caption: 'MonsTober Highlight 49' },
-    { url: 'event50.jpg', caption: 'MonsTober Highlight 50' },
-    { url: 'event51.jpg', caption: 'MonsTober Highlight 51' },
-    { url: 'event52.jpg', caption: 'MonsTober Highlight 52' },
-    { url: 'event53.jpg', caption: 'MonsTober Highlight 53' },
-    { url: 'event54.jpg', caption: 'MonsTober Highlight 54' },
-    { url: 'event55.jpg', caption: 'MonsTober Highlight 55' },
-    { url: 'event56.jpg', caption: 'MonsTober Highlight 56' },
-    { url: 'event57.jpg', caption: 'MonsTober Highlight 57' },
-    { url: 'event58.jpg', caption: 'MonsTober Highlight 58' },
-    { url: 'event59.jpg', caption: 'MonsTober Highlight 59' },
-    { url: 'event60.jpg', caption: 'MonsTober Highlight 60' },
-    { url: 'event61.jpg', caption: 'MonsTober Highlight 61' },
-    { url: 'event62.jpg', caption: 'MonsTober Highlight 62' },
-    { url: 'event63.jpg', caption: 'MonsTober Highlight 63' },
-    { url: 'event64.jpg', caption: 'MonsTober Highlight 64' },
-    { url: 'CWchain.jpg', caption: 'Rooster Won the Chian!' },
-    { url: 'event65.jpg', caption: 'MonsTober Highlight 65' }
-  ];
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const docRef = doc(db, "monstober2026", "liveState");
-
-  const MY_VOTE_KEY = 'monstober:my-vote-v5';
-  const JUDGE_PIN = 'CW2';
-  const JUDGES = ['Judge A', 'Judge B', 'Judge C'];
-  const CRITERIA = [
-    { key:'skill', label:'Skill' },
-    { key:'creativity', label:'Creativity' },
-    { key:'impact', label:'Impact' },
-    { key:'time', label:'Use of Time' }
-  ];
-  const AVATAR_COLORS = ['#8fd15a','#ff9d4d','#c9a227','#5fb8a3','#ff5574'];
-
-  let state = null;
-  let myVote = null;
-  let judgeUnlocked = false;
-  let namesEditable = false;
-  let activeJudge = JUDGES[0];
-  let editingScores = false;
-  let currentResetToken = null;
-
-  function defaultState(){
-    return {
-      votingOpen: false,
-      artists: [
-        { id:'a4', name:'Rooster Inkk', info:'1st Place Winner · 30x20 Black canvas', url:'https://www.facebook.com/roosterinkk', imgUrl:'' },
-        { id:'a3', name:'Bernard Lawrence', info:'2nd Place Winner · 30x20 Black canvas', url:'https://www.facebook.com/burnie.lawrence', imgUrl:'' },
-        { id:'a5', name:'Faith Moody', info:'3rd Place Winner · 30x20 Black canvas', url:'https://www.facebook.com/faith.moody.3344913', imgUrl:'' },
-        { id:'a1', name:'Mark Juber', info:'30x20 Black canvas', url:'https://www.facebook.com/mark.juber.257455', imgUrl:'' },
-        { id:'a2', name:'Pauly Knipfer', info:'30x20 Black canvas', url:'https://www.facebook.com/pauly.knipfer', imgUrl:'' }
-      ],
-      votes: { a1:0, a2:0, a3:0, a4:0, a5:0 },
-      judgeScores: {},
-      judgeRanks: {},
-      resetToken: Date.now()
-    };
-  }
-
-  async function saveState(){
-    try {
-      await setDoc(docRef, state);
-    } catch(e) {
-      console.error('Firebase save failed', e);
-    }
-  }
-
-  function loadMyVote(){
-    try{
-      myVote = localStorage.getItem(MY_VOTE_KEY);
-    } catch(e){ myVote = null; }
-  }
-
-  function saveMyVote(id){
-    myVote = id;
-    try{
-      localStorage.setItem(MY_VOTE_KEY, id);
-    } catch(e){ console.error('vote save failed', e); }
-  }
-
-  function artistTotalPoints(artistId){
-    const audienceVotes = state.votes[artistId] || 0;
-    let judgeBonus = 0;
-    if (state.judgeRanks) {
-      Object.values(state.judgeRanks).forEach(ranks => {
-        if (ranks.rank1 === artistId) judgeBonus += 3;
-        if (ranks.rank2 === artistId) judgeBonus += 2;
-        if (ranks.rank3 === artistId) judgeBonus += 1;
-      });
-    }
-    return audienceVotes + judgeBonus;
-  }
-
-  function totalVotes(){ 
-    return state.artists.reduce((s,a)=> s + artistTotalPoints(a.id), 0); 
-  }
-
-  function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-
-  function renderLiveChip(){
-    const chip = document.getElementById('liveChip');
-    if(state.votingOpen){
-      chip.textContent = '● LIVE';
-      chip.className = 'barlow live-chip blink';
-    } else {
-      chip.textContent = 'VOTING CLOSED';
-      chip.className = 'barlow live-chip status-closed';
-    }
-  }
-
-  function renderArtistGrid(){
-    document.getElementById('totalVotesNum').textContent = totalVotes();
-    const grid = document.getElementById('artistGrid');
-    grid.innerHTML = '';
-    const total = totalVotes();
-    state.artists.forEach((a,i)=>{
-      const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
-      const v = artistTotalPoints(a.id);
-      const pct = total>0 ? Math.round((v/total)*100) : 0;
-      const isVoted = myVote === a.id;
-
-      const card = document.createElement('div');
-      card.className = 'artist-card fade-up' + (isVoted ? ' is-voted' : '');
-      card.style.animationDelay = (i*0.06)+'s';
-
-      const top = document.createElement('div');
-      top.className = 'artist-top';
-      const avatar = document.createElement('div');
-      avatar.className = 'avatar';
-      avatar.style.background = `linear-gradient(135deg,${color}33,${color}11)`;
-      avatar.style.border = `1px solid ${color}44`;
-
-      if (a.imgUrl && a.imgUrl.trim() !== '') {
-        const img = document.createElement('img');
-        img.src = a.imgUrl.trim();
-        img.alt = a.name;
-        img.onerror = () => {
-          const initials = (a.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '??';
-          avatar.innerHTML = `<span style="color:${color}">${initials}</span>`;
-        };
-        avatar.appendChild(img);
-      } else {
-        const initials = (a.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '??';
-        avatar.innerHTML = `<span style="color:${color}">${initials}</span>`;
-      }
-
-      const nameWrap = document.createElement('div');
-      nameWrap.style.flex = '1';
-
-      if (namesEditable) {
-        const nameInput = document.createElement('input');
-        nameInput.className = 'artist-name-input';
-        nameInput.value = a.name;
-        nameInput.placeholder = 'Artist Name';
-        nameInput.addEventListener('change', async ()=>{
-          a.name = nameInput.value.trim() || a.name;
-          await saveState(); renderAll();
-        });
-        nameWrap.appendChild(nameInput);
-
-        const imgInput = document.createElement('input');
-        imgInput.className = 'artist-img-input';
-        imgInput.value = a.imgUrl || '';
-        imgInput.placeholder = 'Photo URL (.jpg)';
-        imgInput.addEventListener('change', async ()=>{
-          a.imgUrl = imgInput.value.trim();
-          await saveState(); renderAll();
-        });
-        nameWrap.appendChild(imgInput);
-      } else {
-        const nameLink = document.createElement('a');
-        nameLink.className = 'artist-name-link';
-        nameLink.textContent = a.name;
-        nameLink.href = a.url || '#';
-        nameLink.target = '_blank';
-        nameLink.rel = 'noopener noreferrer';
-        nameWrap.appendChild(nameLink);
-      }
-
-      if (a.info) {
-        const subInfo = document.createElement('div');
-        subInfo.className = 'artist-subinfo';
-        subInfo.textContent = a.info;
-        nameWrap.appendChild(subInfo);
-      }
-
-      const meta = document.createElement('div');
-      meta.className = 'artist-meta';
-      meta.textContent = 'MONSTER · SHARPIE + ACRYLIC';
-      nameWrap.appendChild(meta);
-
-      top.appendChild(avatar);
-      top.appendChild(nameWrap);
-
-      const btn = document.createElement('button');
-      btn.className = 'vote-btn' + (isVoted ? ' voted-btn' : '');
-      btn.textContent = isVoted ? '✓ VOTED' : (!state.votingOpen ? 'VOTING CLOSED' : 'VOTE');
-      btn.disabled = !state.votingOpen || !!myVote;
-      btn.addEventListener('click', ()=> castVote(a.id));
-
-      const track = document.createElement('div');
-      track.className = 'entry-track';
-      const fill = document.createElement('div');
-      fill.className = 'entry-bar';
-      fill.style.width = pct+'%';
-      fill.style.background = color;
-      track.appendChild(fill);
-      const pctLabel = document.createElement('div');
-      pctLabel.className = 'entry-pct barlow';
-      pctLabel.textContent = `${v} PTS · ${pct}%`;
-
-      card.appendChild(top);
-      card.appendChild(btn);
-      card.appendChild(track);
-      card.appendChild(pctLabel);
-      grid.appendChild(card);
-    });
-  }
-
-  function renderLeaderboard(){
-    const wrap = document.getElementById('leaderboard');
-    wrap.innerHTML = '';
-    const total = totalVotes();
-    const sorted = [...state.artists].sort((x,y)=> artistTotalPoints(y.id) - artistTotalPoints(x.id));
-    sorted.forEach((a,i)=>{
-      const count = artistTotalPoints(a.id);
-      const pct = total>0 ? Math.round((count/total)*100) : 0;
-      const row = document.createElement('div');
-      row.className = 'rank-row fade-up';
-      row.style.animationDelay = (i*0.05)+'s';
-      const badgeClass = i===0 ? 'rb-1' : i===1 ? 'rb-2' : 'rb-other';
-      row.innerHTML = `
-        <div class="bebas rank-badge ${badgeClass}">${i+1}</div>
-        <div class="bebas rank-name">${escapeHtml(a.name)}</div>
-        <div class="rank-track"><div class="rank-fill" style="width:${pct}%"></div></div>
-        <div class="rank-count">${count} PTS</div>
-      `;
-      wrap.appendChild(row);
-    });
-  }
-
-  function renderGallery(){
-    const wrap = document.getElementById('eventGallery');
-    wrap.innerHTML = '';
-
-    if (!STATIC_EVENT_PHOTOS || STATIC_EVENT_PHOTOS.length === 0) {
-      wrap.innerHTML = '<div style="color:var(--muted); font-family:\'Barlow Condensed\',sans-serif; text-align:center; grid-column:1/-1; padding:2rem 0;">No event photos added yet.</div>';
-      return;
-    }
-
-    STATIC_EVENT_PHOTOS.forEach((p)=>{
-      const card = document.createElement('a');
-      card.className = 'gallery-card fade-up';
-      card.href = p.url;
-      card.target = '_blank';
-      card.rel = 'noopener noreferrer';
-
-      const imgWrap = document.createElement('div');
-      imgWrap.className = 'gallery-img-wrap';
-      const img = document.createElement('img');
-      img.src = p.url;
-      img.alt = p.caption || 'Event photo';
-      imgWrap.appendChild(img);
-
-      card.appendChild(imgWrap);
-
-      if (p.caption) {
-        const cap = document.createElement('div');
-        cap.className = 'gallery-caption';
-        cap.textContent = p.caption;
-        card.appendChild(cap);
-      }
-
-      wrap.appendChild(card);
-    });
-  }
-
-  function renderJudgeSelect(){
-    const wrap = document.getElementById('judgeSelect');
-    wrap.innerHTML = '';
-    JUDGES.forEach(j=>{
-      const tab = document.createElement('button');
-      tab.className = 'judge-tab' + (activeJudge===j ? ' active':'');
-      tab.textContent = j.toUpperCase();
-      tab.addEventListener('click', ()=>{
-        activeJudge = j;
-        document.querySelectorAll('.judge-tab').forEach(t=>t.classList.remove('active'));
-        tab.classList.add('active');
-        renderJudgeRankings();
-        renderScoreFields();
-      });
-      wrap.appendChild(tab);
-    });
-  }
-
-  function renderJudgeRankings(){
-    const currentRanks = (state.judgeRanks && state.judgeRanks[activeJudge]) || {};
-    ['1', '2', '3'].forEach(rNum => {
-      const select = document.getElementById(`judgeRank${rNum}`);
-      select.innerHTML = `<option value="">-- Select ${rNum === '1' ? '1st (+3 pts)' : rNum === '2' ? '2nd (+2 pts)' : '3rd (+1 pt)'} --</option>`;
-      state.artists.forEach(a => {
-        const opt = document.createElement('option');
-        opt.value = a.id;
-        opt.textContent = a.name;
-        if (currentRanks[`rank${rNum}`] === a.id) opt.selected = true;
-        select.appendChild(opt);
-      });
-
-      select.onchange = async () => {
-        if(!state.judgeRanks) state.judgeRanks = {};
-        if(!state.judgeRanks[activeJudge]) state.judgeRanks[activeJudge] = {};
-        state.judgeRanks[activeJudge][`rank${rNum}`] = select.value;
-        await saveState();
-        renderAll();
-      };
-    });
-  }
-
-  function renderScoreFields(){
-    const wrap = document.getElementById('scoreFields');
-    wrap.innerHTML = '';
-    state.artists.forEach(a=>{
-      const block = document.createElement('div');
-      block.className = 'score-block';
-      const label = document.createElement('div');
-      label.className = 'score-block-name bebas';
-      label.textContent = a.name;
-      block.appendChild(label);
-
-      const fields = document.createElement('div');
-      fields.className = 'score-fields';
-      CRITERIA.forEach(c=>{
-        const fw = document.createElement('div');
-        fw.className = 'score-field';
-        const lbl = document.createElement('label');
-        lbl.textContent = c.label;
-        const input = document.createElement('input');
-        input.type = 'number'; input.min='0'; input.max='10';
-        const existing = (state.judgeScores[activeJudge] && state.judgeScores[activeJudge][a.id]) || {};
-        input.value = existing[c.key] != null ? existing[c.key] : '';
-        input.addEventListener('focus', ()=>{ editingScores = true; });
-        input.addEventListener('blur', async ()=>{
-          editingScores = false;
-          let val = Number(input.value);
-          if(isNaN(val)) val = 0;
-          val = Math.max(0, Math.min(10, val));
-          input.value = val;
-          if(!state.judgeScores[activeJudge]) state.judgeScores[activeJudge] = {};
-          if(!state.judgeScores[activeJudge][a.id]) state.judgeScores[activeJudge][a.id] = {};
-          state.judgeScores[activeJudge][a.id][c.key] = val;
-          await saveState();
-        });
-        fw.appendChild(lbl); fw.appendChild(input);
-        fields.appendChild(fw);
-      });
-      block.appendChild(fields);
-      wrap.appendChild(block);
-    });
-  }
-
-  function renderAll(){
-    if(!state) return;
-    renderLiveChip();
-    renderArtistGrid();
-    renderLeaderboard();
-    renderGallery();
-    if(judgeUnlocked){ 
-      renderJudgeSelect(); 
-      renderJudgeRankings();
-      renderScoreFields(); 
-    }
-  }
-
-  async function castVote(id){
-    if(!state.votingOpen || myVote) return;
-    state.votes[id] = (state.votes[id]||0) + 1;
-    saveMyVote(id);
-    await saveState();
-    document.getElementById('voteStatus').textContent = 'Vote counted — thanks for voting.';
-    renderAll();
-  }
-
-  /* Tabs Navigation */
-  document.querySelectorAll('.tab-btn[data-tab]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.tab-btn[data-tab]').forEach(b=>b.classList.remove('tab-active'));
-      btn.classList.add('tab-active');
-      ['vote','leaders','gallery','judges'].forEach(t=>{
-        document.getElementById('panel-'+t).style.display = (t===btn.dataset.tab) ? 'block' : 'none';
-      });
-    });
-  });
-
-  /* Judge PIN Unlock */
-  document.getElementById('pinSubmit').addEventListener('click', unlockJudge);
-  document.getElementById('pinInput').addEventListener('keydown', e=>{ if(e.key==='Enter') unlockJudge(); });
-  function unlockJudge(){
-    const val = document.getElementById('pinInput').value.trim().toUpperCase();
-    if(val === JUDGE_PIN){
-      judgeUnlocked = true;
-      document.getElementById('judgeGate').style.display = 'none';
-      document.getElementById('judgePanel').style.display = 'block';
-      renderJudgeSelect(); 
-      renderJudgeRankings();
-      renderScoreFields();
-      renderGallery();
-    } else {
-      document.getElementById('pinError').textContent = 'Incorrect PIN.';
-    }
-  }
-
-  /* Admin Buttons */
-  document.getElementById('toggleVotingBtn').addEventListener('click', async ()=>{
-    state.votingOpen = !state.votingOpen;
-    await saveState(); renderAll();
-  });
-  document.getElementById('editNamesBtn').addEventListener('click', ()=>{
-    namesEditable = !namesEditable;
-    document.getElementById('editNamesBtn').textContent = namesEditable ? 'DONE EDITING NAMES & PHOTOS' : 'EDIT ARTIST NAMES & PHOTOS';
-    renderArtistGrid();
-  });
-  document.getElementById('resetBtn').addEventListener('click', async ()=>{
-    if(!confirm('Reset all votes and judge scores? This cannot be undone.')) return;
-    state.votes = { a1:0, a2:0, a3:0, a4:0, a5:0 };
-    state.judgeScores = {};
-    state.judgeRanks = {};
-    state.resetToken = Date.now();
-    
-    localStorage.removeItem(MY_VOTE_KEY);
-    myVote = null;
-
-    await saveState(); 
-    renderAll();
-  });
-
-  /* Initialization */
-  async function init(){
-    loadMyVote();
-    
-    const snap = await getDoc(docRef);
-    if (!snap.exists()) {
-      state = defaultState();
-      await setDoc(docRef, state);
-    } else {
-      state = snap.data();
-      if(!state.judgeRanks) state.judgeRanks = {};
-    }
-    
-    currentResetToken = state.resetToken || null;
-    renderAll();
-
-    onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const newData = docSnap.data();
-
-        if (newData.resetToken && newData.resetToken !== currentResetToken) {
-          currentResetToken = newData.resetToken;
-          localStorage.removeItem(MY_VOTE_KEY);
-          myVote = null;
-        }
-
-        state = newData;
-        if(!state.judgeRanks) state.judgeRanks = {};
-        if (!editingScores) {
-          renderAll();
-        }
-      }
-    });
-  }
-
-  init();
-</script>
 </body>
 </html>
